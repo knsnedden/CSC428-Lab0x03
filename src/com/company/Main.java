@@ -3,18 +3,15 @@ package com.company;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.lang.Math;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+
+
 public class Main {
 
     public static void main(String[] args) {
-        int[] arr;
-        int size = 20;
-        ArrayList<int[]> fin = new ArrayList<int[]>();
-
-        arr = generateList(size);
-        Arrays.sort(arr);
-
-        fin = bruteForce(arr);
-
+        timeTrials();
     }
 
     public static int[] generateList(int N){
@@ -50,5 +47,45 @@ public class Main {
             }
         }
         return result;
+    }
+
+    public static void timeTrials(){
+        long timeLimit = 0, maxTime = (long)Math.pow(2,50), timeBefore = 0, timeAfter = 0;
+        long prevBTime = 0;
+        float pdr = 0, dr = 0;
+        int N = 4, prev_N = 0;
+
+        System.out.println("          Brute 3Sum                                          ");
+        System.out.println("   N    |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |");
+        while (timeLimit < maxTime){
+            System.out.printf("%7d |", N);
+            int[] arr = new int[N];
+            arr = generateList(N);
+            timeBefore = getCpuTime();
+            bruteForce(arr);
+            timeAfter = getCpuTime();
+            timeLimit = timeAfter - timeBefore;
+            System.out.printf("%18d |", timeLimit);
+            if (prevBTime == 0){
+                System.out.printf("        na        |          na         |");
+            }else{
+                pdr = (float)(Math.pow(N,3)/Math.pow(prev_N,3));
+                dr = (float)timeLimit/(float)prevBTime;
+                System.out.printf("%17.3f |%20.0f |", dr, pdr);
+            }
+            prevBTime = timeLimit;
+
+
+            System.out.println();
+            prev_N = N;
+            N = N*2;
+        }
+    }
+
+
+    public static long getCpuTime(){
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        return bean.isCurrentThreadCpuTimeSupported() ?
+                bean.getCurrentThreadCpuTime() : 0L;
     }
 }
