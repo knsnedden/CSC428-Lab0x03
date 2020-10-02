@@ -93,14 +93,51 @@ public class Main {
         return -1;
     }
 
+    public static ArrayList<int[]> fastestApproach(int[] arr){
+        ArrayList<int[]> result = new ArrayList<int[]>();
+        Arrays.sort(arr);
+
+        for (int i = 0; i < arr.length - 2; ++i){
+            int x = arr[i];
+            int a = i + 1; // begin moving up at the element above i
+            int b = arr.length - 1; // begin moving down at the last element
+            while(a < b){
+                if (arr[i] + arr[a] + arr[b] == 0){
+                    int[] hold = new int[3];
+                    hold[0] = arr[i];
+                    hold[1] = arr[a];
+                    hold[2] = arr[b];
+                    result.add(hold.clone());
+
+                    do{
+                        a++;
+                    }while (arr[a] == arr[a-1] && a < arr.length);
+                    do{
+                        b--;
+                    }while (arr[b] == arr[b+1] && b > 0);
+                }
+                if(arr[i] + arr[a] + arr[b] > 0){
+                    do{
+                        b--;
+                    }while (arr[b] == arr[b+1]);
+                }else if(arr[i] + arr[a] +arr[b] < 0){
+                    do{
+                        a++;
+                    }while (arr[a] == arr[a-1] && a < arr.length);
+                }
+            }
+        }
+        return result;
+    }
+
     public static void timeTrials(){
-        long difference = 0, maxTime = (long)Math.pow(2,40), timeBefore = 0, timeAfter = 0;
+        long difference = 0, maxTime = (long)Math.pow(2,30), timeBefore = 0, timeAfter = 0;
         long prevBTime = 0, prevFasterTime = 0;
         float pdr = 0, dr = 0;
         int N = 4, prev_N = 0;
         boolean keepGoing = true;
 
-        System.out.println("          Brute 3Sum                                                  ");
+        System.out.println("          Brute 3Sum                                                   Faster 3Sum");
         System.out.println("   N    |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |");
         while (keepGoing){
             System.out.printf("%7d |", N);
