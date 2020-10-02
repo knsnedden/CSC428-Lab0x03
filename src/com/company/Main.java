@@ -132,13 +132,13 @@ public class Main {
 
     public static void timeTrials(){
         long difference = 0, maxTime = (long)Math.pow(2,30), timeBefore = 0, timeAfter = 0;
-        long prevBTime = 0, prevFasterTime = 0;
+        long prevBTime = 0, prevFasterTime = 0, prevFastestTime = 0;
         float pdr = 0, dr = 0;
         int N = 4, prev_N = 0;
         boolean keepGoing = true;
 
-        System.out.println("          Brute 3Sum                                                   Faster 3Sum");
-        System.out.println("   N    |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |");
+        System.out.println("          Brute 3Sum                                                   Faster 3Sum                                                  Fastest 3Sum");
+        System.out.println("   N    |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |       Time        |  Doubling Ratio  | Exp. Doubling Ratio |");
         while (keepGoing){
             System.out.printf("%7d |", N);
             int[] arr = new int[N];
@@ -182,10 +182,29 @@ public class Main {
                 System.out.printf("        --         |        --        |         --          |");
             }
 
+            if (prevFastestTime< maxTime) {
+                timeBefore = getCpuTime();
+                fastestApproach(arr);
+                timeAfter = getCpuTime();
+                difference = timeAfter - timeBefore;
+                System.out.printf("%18d |", difference);
+                if (prevFastestTime == 0) {
+                    System.out.printf("        na        |          na         |");
+                } else {
+                    pdr = (float) (Math.pow(N, 2) / Math.pow(prev_N, 2));
+                    dr = (float) difference / (float) prevFastestTime;
+                    System.out.printf("%17.3f |%20.0f |", dr, pdr);
+                }
+                prevFastestTime = difference;
+            }
+            else{
+                System.out.printf("        --         |        --        |         --          |");
+            }
+
             System.out.println();
             prev_N = N;
             N = N*2;
-            if (prevBTime >= maxTime && prevFasterTime >= maxTime){
+            if (prevBTime >= maxTime && prevFasterTime >= maxTime && prevFastestTime >= maxTime){
                 keepGoing = false;
             }
         }
