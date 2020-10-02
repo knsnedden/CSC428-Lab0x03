@@ -29,6 +29,7 @@ public class Main {
 
     public static ArrayList<int[]> bruteForce(int[] arr){
         ArrayList<int[]> result = new ArrayList<int[]>();
+        Arrays.sort(arr);
 
         for (int i = 0; i < arr.length; ++i){
             for (int j = i + 1; j < arr.length; ++j){
@@ -47,6 +48,50 @@ public class Main {
             }
         }
         return result;
+    }
+
+    public static ArrayList<int[]> fasterApproach(int[] arr){
+        ArrayList<int[]> result = new ArrayList<int[]>();
+        Arrays.sort(arr);
+
+        // loop through the list to find every possible pair
+        for (int i = 0; i < arr.length; ++i){
+            for (int j = i+1; j < arr.length; ++j){
+                if (arr[i] != arr[j]){
+                    int x = (arr[i] + arr[j])*-1;
+                    int index = binarySearch(arr,x,j);
+                    if (index != -1 && arr[index] != arr[i] && arr[index] != arr[j]) {
+                        int[] hold = new int[3];
+                        hold[0] = arr[i];
+                        hold[1] = arr[j];
+                        hold[2] = arr[index];
+                        result.add(hold.clone());
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static int binarySearch(int[] arr, int toFind, int low){
+        int high = arr.length - 1;
+        int m;
+
+        while (low <= high){
+            m = (low + high)/2;
+            if (toFind > arr[m]){
+                low = m + 1;
+            }
+            else if (toFind < arr[m]){
+                high = m - 1;
+            }
+            else{
+                return m;
+            }
+        }
+
+        return -1;
     }
 
     public static void timeTrials(){
